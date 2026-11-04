@@ -1,0 +1,339 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: #0b0f19;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+    padding: 20px;
+}
+
+/* Animated Trading Chart Candlestick Background Elements */
+.bg-candlestick {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
+    z-index: 0;
+    overflow: hidden;
+}
+
+.bg-candlestick::before {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    width: 100%;
+    height: 300px;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 60px,
+        rgba(52, 211, 153, 0.03) 60px,
+        rgba(248, 113, 113, 0.03) 90px
+    );
+    animation: chartMove 20s linear infinite;
+}
+
+@keyframes chartMove {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100px); }
+}
+
+/* Floating Gradient Orbs */
+.bg-blob {
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.4) 0%, rgba(168, 85, 247, 0.4) 100%);
+    filter: blur(90px);
+    border-radius: 50%;
+    z-index: 0;
+    animation: floatBlob 12s ease-in-out infinite alternate;
+}
+
+.blob-1 { top: -100px; left: -100px; }
+.blob-2 { bottom: -100px; right: -100px; animation-delay: -6s; }
+
+@keyframes floatBlob {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(60px, 60px) scale(1.15); }
+}
+
+/* Main Layout Wrapper for Form & Quotes Ticker */
+.main-wrapper {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    max-width: 1050px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Main Trading Form Card with Glassmorphism & Side Beams */
+.form-container {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 35px;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 540px;
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7);
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Glowing Left and Right Side Beam Animations */
+.form-container::before,
+.form-container::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, #34d399, #6366f1, transparent);
+    animation: sideBeam 4s ease-in-out infinite;
+    z-index: 2;
+}
+
+.form-container::before { top: -120px; left: 0; }
+.form-container::after { bottom: -120px; right: 0; animation-delay: 2s; }
+
+@keyframes sideBeam {
+    0% { transform: translateY(-100%); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(500%); opacity: 0; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+h2 {
+    color: #f8fafc;
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    color: #94a3b8;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Stats Summary Box */
+.stats-container {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 14px;
+    border-radius: 14px;
+    flex: 1;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.stat-card h3 {
+    font-size: 12px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.stat-card p {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+/* Floating Input Group Styles */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #f8fafc;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus,
+.input-group input:not(:placeholder-shown),
+.input-group select:focus {
+    border-color: #6366f1;
+    background: rgba(30, 41, 59, 0.8);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+
+.input-group label {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-group input:focus ~ label,
+.input-group input:not(:placeholder-shown) ~ label,
+.input-group input[type="date"] ~ .active-label {
+    top: 0;
+    font-size: 11px;
+    color: #818cf8;
+    padding: 0 6px;
+    background: #1e293b;
+    border-radius: 4px;
+}
+
+/* Advanced Animated Button */
+button {
+    position: relative;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+    margin-top: 5px;
+}
+
+button span {
+    position: relative;
+    z-index: 2;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.6);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.btn-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+button:hover .btn-glow {
+    opacity: 1;
+    animation: rotateGlow 3s linear infinite;
+}
+
+@keyframes rotateGlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Right-Side Trading Quotes Ticker */
+.quotes-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 320px;
+    width: 100%;
+}
+
+.quote-card {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 16px 20px;
+    border-radius: 16px;
+    color: #e2e8f0;
+    font-size: 13px;
+    line-height: 1.4;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    animation: fadeInRight 0.8s ease forwards;
+}
+
+.quote-card:hover {
+    transform: translateX(5px);
+    border-color: #34d399;
+}
+
+.quote-card::before {
+    content: '💡';
+    margin-right: 8px;
+}
+
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+#responseMessage {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+    font-weight: 500;
+    min-height: 20px;
+}
+
+/* Responsive Layout */
+@media (max-width: 900px) {
+    .main-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+    .quotes-sidebar {
+        max-width: 540px;
+    }
+}

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Forex & Crypto Journal</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .stats-container { display: flex; gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.1); color: #fff; }
+        .stat-card h3 { font-size: 18px; color: #818cf8; margin-bottom: 5px; }
+        .stat-card p { font-size: 20px; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <div class="form-container" style="max-width: 600px;">
+        <h2>Automated Trading Journal</h2>
+        <p class="subtitle">XAUUSD, Forex & BTCUSD Auto P&L Calculator</p>
+
+        <!-- Summary Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3>Total Trades</h3>
+                <p id="totalTrades">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Win Rate</h3>
+                <p id="winRate">0%</p>
+            </div>
+            <div class="stat-card">
+                <h3>Net P&L</h3>
+                <p id="totalProfit">$0.00</p>
+            </div>
+        </div>
+        
+        <form id="tradeForm">
+            <div class="input-group">
+                <input type="date" id="trade_date" required>
+                <label class="active-label">Trade Date</label>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="pair" required placeholder=" ">
+                <label>Pair / Asset (e.g. XAUUSD, EURUSD, BTCUSD)</label>
+            </div>
+
+            <div class="input-group">
+                <select id="entry_type" style="width:100%; padding:14px; background:#0f172a; color:#fff; border-radius:12px; border:1.5px solid rgba(255,255,255,0.1);">
+                    <option value="BUY">BUY</option>
+                    <option value="SELL">SELL</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <input type="number" step="any" id="entry_price" required placeholder=" ">
+                <label>Entry Price</label>
+            </div>
+
+            <div class="input-group">
+                <input type="number" step="any" id="tp_price" required placeholder=" ">
+                <label>Take Profit (TP)</label>
+            </div>
+
+            <div class="input-group">
+                <input type="number" step="any" id="sl_price" required placeholder=" ">
+                <label>Stop Loss (SL)</label>
+            </div>
+
+            <div class="input-group">
+                <input type="number" step="0.01" min="0.01" id="lot_size" required placeholder=" ">
+                <label>Lot Size (min 0.01)</label>
+            </div>
+
+            <div class="input-group">
+                <select id="result_status" style="width:100%; padding:14px; background:#0f172a; color:#fff; border-radius:12px; border:1.5px solid rgba(255,255,255,0.1);">
+                    <option value="TP">Hit TP (Win)</option>
+                    <option value="SL">Hit SL (Loss)</option>
+                </select>
+            </div>
+
+            <button type="submit">
+                <span>Calculate & Save Trade</span>
+                <div class="btn-glow"></div>
+            </button>
+        </form>
+        <p id="responseMessage"></p>
+    </div>
+
+    <script>
+        const API_URL = 'https://journal-fx.onrender.com';
+
+        async function fetchSummary() {
+            try {
+                const res = await fetch(`${API_URL}/api/trades-summary`);
+                const data = await res.json();
+                document.getElementById('totalTrades').textContent = data.totalTrades;
+                document.getElementById('winRate').textContent = data.winRate + '%';
+                const profitEl = document.getElementById('totalProfit');
+                profitEl.textContent = '$' + data.totalProfit;
+                profitEl.style.color = data.totalProfit >= 0 ? '#4ade80' : '#f87171';
+            } catch (err) {
+                console.error('Error fetching summary:', err);
+            }
+        }
+
+        document.getElementById('tradeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                trade_date: document.getElementById('trade_date').value,
+                pair: document.getElementById('pair').value,
+                entry_type: document.getElementById('entry_type').value,
+                entry_price: document.getElementById('entry_price').value,
+                tp_price: document.getElementById('tp_price').value,
+                sl_price: document.getElementById('sl_price').value,
+                lot_size: document.getElementById('lot_size').value,
+                result_status: document.getElementById('result_status').value
+            };
+
+            const msg = document.getElementById('responseMessage');
+            msg.textContent = 'Processing trade...';
+
+            try {
+                const res = await fetch(`${API_URL}/api/add-forex-trade`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    msg.style.color = '#4ade80';
+                    msg.textContent = `Success! Calculated P&L: $${result.pnl}`;
+                    document.getElementById('tradeForm').reset();
+                    fetchSummary();
+                } else {
+                    msg.style.color = '#f87171';
+                    msg.textContent = result.message;
+                }
+            } catch (err) {
+                msg.style.color = '#f87171';
+                msg.textContent = 'Server connection error.';
+            }
+        });
+
+        fetchSummary();
+    </script>
+</body>
+</html>
